@@ -90,7 +90,6 @@ docker run -it \
 ### Data ingestion
 Running locally
 
-
 ```shell
 URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
 
@@ -108,3 +107,28 @@ Build the image
 ```shell
 docker build -t taxi_ingest:v001 .
 ```
+
+### Docker-Compose
+
+Run it:
+
+```shell
+docker-compose up
+```
+
+Run in detached mode:
+```shell
+docker-compose up -d
+```
+
+Shutting it down:
+```shell
+docker-compose down
+```
+
+Note: to make pgAdmin configuration persistent, create a folder `data_pgadmin`. Change its permission via
+```shell
+sudo chown 5050:5050 data_pgadmin
+```
+
+and mount it to the `/var/lib/pgadmin` folder:
