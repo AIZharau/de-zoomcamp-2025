@@ -1,4 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
 .venv/
+venv/
+ENV/
+
+# IDEs
 .idea/
+.vscode/
+
+# OS files
 .DS_Store
+.DS_Store?
+._*
+
+# Data and Secrets
+*.csv
+*.parquet
 ny_taxi_postgres_data/
+.env
+credentials.json
+*.json
+
+# Terraform
+.terraform
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.tfstate.lock.info
+
+# Docker
+docker-compose.yaml.bak
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+logs/
