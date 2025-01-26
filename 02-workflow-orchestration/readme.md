@@ -39,10 +39,16 @@ This is an example using Clickhouse as engine Kestra as orchestrator and MinIO f
 
 
 4. **Kestra**
+   Once the container starts, you can access the Kestra UI at http://localhost:8080.
   - Create minio_kv pipeline
   - Create minio_create_bucket pipeline and then add Access Policy
   - Create minio_taxi pipeline
-
+If you prefer to add flows programmatically using Kestra's API, run the following commands:
+```shell
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/minio_kv.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/minio_create_bucket.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/minio_taxi.yaml
+```
 
 Stop and remove the containers and network:
 ```shell
