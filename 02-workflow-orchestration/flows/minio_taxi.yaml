@@ -48,7 +48,7 @@ tasks:
     sql: CREATE DATABASE IF NOT EXISTS zoomcamp
 
   - id: if_yellow_taxi
-    type: io.kestra.plugin.jdbc.clickhouse.flow.If
+    type: io.kestra.plugin.core.flow.If
     condition: "{{inputs.taxi == 'yellow'}}"
     then:
       - id: ch_yellow_tripdata
@@ -82,11 +82,11 @@ tasks:
               input_format_with_names_use_header = 1;
 
       - id: merge_yellow_tables
-        type: io.kesra.plugin.jdbc.clockhouse.Query
+        type: io.kestra.plugin.jdbc.clickhouse.Query
         sql: CREATE TABLE IF NOT EXISTS zoomcamp.yello_tripdata = ENGINE=Merge('zoomcamp', '^yellow');
 
   - id: if_green_taxi
-    type: io.kestra.plugin.jdbc.clickhouse.flow.If
+    type: io.kestra.plugin.core.flow.If
     condition: "{{inputs.taxi == 'green'}}"
     then:
       - id: ch_green_tripdata
@@ -122,7 +122,7 @@ tasks:
               input_format_with_names_use_header = 1;
 
       - id: merge_green_tables
-        type: io.kesra.plugin.jdbc.clockhouse.Query
+        type: io.kestra.plugin.jdbc.clickhouse.Query
         sql: CREATE TABLE IF NOT EXISTS zoomcamp.green_tripdata = ENGINE=Merge('zoomcamp', '^green');
 
   - id: purge_files
