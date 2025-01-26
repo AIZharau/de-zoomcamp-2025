@@ -43,7 +43,8 @@ This is an example using Clickhouse as engine Kestra as orchestrator and MinIO f
   - Create minio_kv pipeline
   - Create minio_create_bucket pipeline and then add Access Policy
   - Create minio_taxi pipeline
-If you prefer to add flows programmatically using Kestra's API, run the following commands:
+
+  If you prefer to add flows programmatically using Kestra's API, run the following commands:
 ```shell
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/minio_kv.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/minio_create_bucket.yaml
