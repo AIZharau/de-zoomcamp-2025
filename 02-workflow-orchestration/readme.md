@@ -46,9 +46,11 @@ This is an example using Clickhouse as engine Kestra as orchestrator and MinIO f
 
   If you prefer to add flows programmatically using Kestra's API, run the following commands:
 ```shell
-curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/minio_kv.yaml
-curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/minio_create_bucket.yaml
-curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/minio_taxi.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/01_minio_create_bucket.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/02-minio_kv.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/03_minio_taxi.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/04_minio_taxi_scheduled.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/05_clickhouse_dbt.yaml
 ```
 
 Stop and remove the containers and network:

@@ -39,3 +39,7 @@ docker-compose.yaml.bak
 
 # Logs
 logs/
+
+# dbt
+target/
+dbt_packages/
