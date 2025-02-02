@@ -1,4 +1,4 @@
-# Clickhouse Kestra and MinIO
+# Kestra with MinIO and Clickhouse
 
 This is an example using Clickhouse as engine Kestra as orchestrator and MinIO for object storage.
 
@@ -14,7 +14,7 @@ This is an example using Clickhouse as engine Kestra as orchestrator and MinIO f
 ### Kestra (Workflow Orchestrator)
 - **Purpose**: Creating pipeline and orchestrate task.
 - **Actions**:
-  - Uploading data to Minio .
+  - Uploading data to Minio.
   - Creating tables in Clickhouse.
 - **Console URL**: [http://localhost:8080](http://localhost:8080)
 
@@ -40,9 +40,13 @@ This is an example using Clickhouse as engine Kestra as orchestrator and MinIO f
 
 4. **Kestra**
    Once the container starts, you can access the Kestra UI at http://localhost:8080.
-  - Create minio_kv pipeline
-  - Create minio_create_bucket pipeline and then add Access Policy
-  - Create minio_taxi pipeline
+  - Create 01_minio_create_bucket pipeline and then add Access Policy
+  - Create 02_minio_kv pipeline
+  - Create 03_minio_taxi pipeline
+  - Create 04_minio_taxi_scheduled pipeline
+  - Create 05_clickhouse_dbt pipelie
+
+
 
   If you prefer to add flows programmatically using Kestra's API, run the following commands:
 ```shell
@@ -52,6 +56,7 @@ curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/03_m
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/04_minio_taxi_scheduled.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/05_clickhouse_dbt.yaml
 ```
+
 
 Stop and remove the containers and network:
 ```shell
