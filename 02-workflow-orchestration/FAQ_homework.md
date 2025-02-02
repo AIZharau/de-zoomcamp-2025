@@ -23,6 +23,8 @@ As a hint, Kestra makes that process really easy:
 
 ![manually_set](https://github.com/AIZharau/de-zoomcamp-2025/blob/main/02-workflow-orchestration/images/manually_set.png)
 
+![loaded](https://github.com/AIZharau/de-zoomcamp-2025/blob/main/02-workflow-orchestration/images/data_in_clickhiuse.png)
+
 ![example]([02-workflow-orchestration/images/yellow_and_green_data_in_db.png](https://github.com/AIZharau/de-zoomcamp-2025/blob/main/02-workflow-orchestration/images/yellow_and_green_data_in_db.png))
 
 ### Quiz Questions
