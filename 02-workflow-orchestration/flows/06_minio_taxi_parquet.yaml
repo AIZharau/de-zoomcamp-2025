@@ -1,0 +1,146 @@
+id: minio_taxi_parquet_mod
+namespace: zoomcamp
+description: |
+  The Parquet Data used in the course: https://github.com/DataTalksClub/nyc-tlc-data/releases
+
+inputs:
+  - id: taxi
+    type: SELECT
+    displayName: Select taxi type
+    values: [yellow, green]
+    defaults: green
+
+variables:
+  file: "{{inputs.taxi}}_tripdata_{{trigger.date | date('yyyy-MM')}}.parquet"
+  minio_file: "{{kv('BUCKET_NAME')}}_{{vars.file}}"
+  table: "{{kv('DATASET')}}.{{inputs.taxi}}_tripdata"
+  data: "{{outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ (trigger.date | date('yyyy-MM')) ~ '.parquet']}}"
+
+tasks:
+  - id: set_label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      file: "{{render(vars.file)}}"
+      taxi: "{{inputs.taxi}}"
+
+  - id: extract
+    type: io.kestra.plugin.scripts.shell.Commands
+    outputFiles:
+      - "*.parquet"
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - wget -qO- https://d37ci6vzurychx.cloudfront.net/trip-data/{{inputs.taxi}}_tripdata_{{trigger.date | date('yyyy-MM')}}.parquet > {{render(vars.file)}}
+
+  - id: upload_to_minio
+    type: io.kestra.plugin.minio.Upload
+    accessKeyId: "{{kv('ACCESS_KEY_ID')}}"
+    secretKeyId: "{{kv('SECRET_KEY_ID')}}"
+    region: "{{kv('REGION')}}"
+    endpoint: "{{kv('ENDPOINT_URL')}}"
+    bucket: "{{kv('BUCKET_NAME')}}"
+    from: "{{render(vars.data)}}"
+    key: "{{inputs.taxi}}/{{render(vars.minio_file)}}"
+
+  - id: create_database
+    type: io.kestra.plugin.jdbc.clickhouse.Query
+    sql: CREATE DATABASE IF NOT EXISTS bronze
+
+  - id: if_yellow_taxi
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{inputs.taxi == 'yellow'}}"
+    then:
+      - id: ch_yellow_tripdata
+        type: io.kestra.plugin.jdbc.clickhouse.Query
+        sql: |
+          CREATE TABLE IF NOT EXISTS {{render(vars.table)}} (
+          VendorID String,
+          tpep_pickup_datetime DateTime64,
+          tpep_dropoff_datetime DateTime64,
+          passenger_count UInt8,
+          trip_distance Float64,
+          RatecodeID String,
+          store_and_fwd_flag String,
+          PULocationID String,
+          DOLocationID String,
+          payment_type UInt8,
+          fare_amount Float32,
+          extra Float32,
+          mta_tax Float32,
+          tip_amount Float32,
+          tolls_amount Float32,
+          improvement_surcharge Float32,
+          total_amount Float32,
+          congestion_surcharge Float32,
+          trigger_month String DEFAULT '{{trigger.date | date('yyyy-MM')}}',
+          load_date Date DEFAULT toDate(now())
+          )
+          ENGINE = S3(
+          'http://object-store:9000/zoomcamp/{{inputs.taxi}}/*',
+          '{{kv('ACCESS_KEY_ID')}}',
+          '{{kv('SECRET_KEY_ID')}}',
+          'Parquet'
+          );
+
+  - id: if_green_taxi
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{inputs.taxi == 'green'}}"
+    then:
+      - id: ch_green_tripdata
+        type: io.kestra.plugin.jdbc.clickhouse.Query
+        sql: |
+          CREATE TABLE IF NOT EXISTS {{render(vars.table)}} (
+          VendorID String,
+          lpep_pickup_datetime DateTime64,
+          lpep_dropoff_datetime DateTime64,
+          store_and_fwd_flag String,
+          RatecodeID String,
+          PULocationID String,
+          DOLocationID String,
+          passenger_count UInt8,
+          trip_distance Float64,
+          fare_amount Float32,
+          extra Float32,
+          mta_tax Float32,
+          tip_amount Float32,
+          tolls_amount Float32,
+          ehail_fee String,
+          improvement_surcharge Float32,
+          total_amount Float32,
+          payment_type UInt8,
+          trip_type UInt8,
+          congestion_surcharge Float32,
+          trigger_month String DEFAULT '{{trigger.date | date('yyyy-MM')}}',
+          load_date Date DEFAULT toDate(now())
+          )
+          ENGINE = S3(
+          'http://object-store:9000/zoomcamp/{{inputs.taxi}}/*',
+          '{{kv('ACCESS_KEY_ID')}}',
+          '{{kv('SECRET_KEY_ID')}}',
+          'Parquet'
+          );
+
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+    description: If you'd like to explore Kestra outputs, disable it.
+    disabled: false
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.clickhouse.Query
+    values:
+      url: jdbc:clickhouse://host.docker.internal:8123/
+      username: default
+      password: clickhouse_password
+
+triggers:
+  - id: green_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 1 * *"
+    inputs:
+      taxi: green
+
+  - id: yellow_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 10 1 * *"
+    inputs:
+      taxi: yellow

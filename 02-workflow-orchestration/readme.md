@@ -45,6 +45,7 @@ This is an example using Clickhouse as engine Kestra as orchestrator and MinIO f
   - Create 03_minio_taxi pipeline
   - Create 04_minio_taxi_scheduled pipeline
   - Create 05_clickhouse_dbt pipelie
+  - Create 06_minio_taxi_parquet pipeline
 
 
 
@@ -55,6 +56,7 @@ curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/02-m
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/03_minio_taxi.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/04_minio_taxi_scheduled.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/05_clickhouse_dbt.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/06_minio_taxi_parquet.yaml
 ```
 
 
