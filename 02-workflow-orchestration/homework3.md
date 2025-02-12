@@ -26,7 +26,7 @@ Question 1: What is count of records for the 2024 Yellow Taxi Data?
 - 20,332,093
 - 85,431,289
 
-## Solution: query in clickhouse:
+##### Solution:
 ```sql
 SELECT count(*) 
 FROM bronze.yellow_tripdata;
@@ -44,7 +44,9 @@ What is the **estimated amount** of data that will be read when this query is ex
 - 2.14 GB for the External Table and 0MB for the Materialized Table
 - 0 MB for the External Table and 0MB for the Materialized Table
 
+```
 -- **ANSWER**: - 0 MB for the External Table and 155.12 MB for the Materialized Table
+```
 
 ---
 ## Question 3:
@@ -56,7 +58,7 @@ doubling the estimated bytes processed.
 - BigQuery automatically caches the first queried column, so adding a second column increases processing time but does not affect the estimated bytes scanned.
 - When selecting multiple columns, BigQuery performs an implicit join operation between them, increasing the estimated bytes processed
 
--- **ANSWER**: `- BigQuery is a columnar database, and it only scans the specific columns requested in the query. Querying two columns (PULocationID, DOLocationID) requires `
+-- **ANSWER**: - BigQuery is a columnar database, and it only scans the specific columns requested in the query. Querying two columns (PULocationID, DOLocationID) requires 
 reading more data than querying one column (PULocationID), leading to a higher estimated number of bytes processed.
 
 ---
@@ -67,7 +69,7 @@ How many records have a fare_amount of 0?
 - 20,188,016
 - 8,333
 
-## Solution: query in clickhouse:
+##### Solution:
 ```sql
 SELECT count(*) 
 FROM bronze.yellow_tripdata
@@ -111,6 +113,7 @@ Choose the answer which most closely matches.
 - 310.24 MB for non-partitioned table and 26.84 MB for the partitioned table
 - 5.87 MB for non-partitioned table and 0 MB for the partitioned table
 - 310.31 MB for non-partitioned table and 285.64 MB for the partitioned table
+
 ```sql
 -- Non-Partitioned Table
 SELECT DISTINCT VendorID
@@ -135,6 +138,7 @@ Where is the data stored in the External Table you created?
 It is best practice in Big Query to always cluster your data:
 - True
 - False
+
 -- ANSWER:  False
 
 Clustering in BigQuery is a powerful optimization tool, but it should be used selectively:
