@@ -44,7 +44,7 @@ What is the **estimated amount** of data that will be read when this query is ex
 - 2.14 GB for the External Table and 0MB for the Materialized Table
 - 0 MB for the External Table and 0MB for the Materialized Table
 
--- **ANSWER**: - 18.82 MB for the External Table and 47.60 MB for the Materialized Table
+-- **ANSWER**: - 0 MB for the External Table and 155.12 MB for the Materialized Table
 
 ---
 ## Question 3:
@@ -92,7 +92,7 @@ partitioning by this column allows BigQuery to skip scanning irrelevant partitio
 Example: If your data is partitioned by day, a query filtering for a specific week will only scan 7 partitions instead of the entire table.
 
 **Clustering on VendorID**
-Clustering sorts the data within each partition based on the specified column(s).
+Clustering sorts the data within each partition based on the specified columns.
 If queries order by VendorID (e.g., ORDER BY VendorID), clustering on this column 
 ensures the data is pre-sorted, improving query performance.
 Clustering also optimizes filters on VendorID, as BigQuery can use metadata to skip blocks of data that don’t match the filter.
