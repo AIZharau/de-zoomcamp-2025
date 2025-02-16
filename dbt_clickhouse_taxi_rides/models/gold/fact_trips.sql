@@ -1,4 +1,12 @@
-{{ config(materialized='table') }}
+{{
+    config(
+        schema='gold',
+        order_by='tripid',
+        engine='MergeTree',
+        materialized='table'
+    )
+}}
+
 
 WITH geen_tripdata AS (
     SELECT *,
@@ -21,7 +29,8 @@ dim_zones AS (
     SELECT * FROM {{ ref('dim_zones') }}
     WHERE brough != 'Unknown'
 )
-SELECT trips_unioned.tripid, 
+SELECT 
+    trips_unioned.tripid, 
     trips_unioned.vendorid, 
     trips_unioned.service_type,
     trips_unioned.ratecodeid, 

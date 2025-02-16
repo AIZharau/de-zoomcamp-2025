@@ -1,4 +1,8 @@
-{{ config(materialized='table') }}
+{{ config(
+    materialized='table',
+    schema='silver',
+    engine='MergeTree',
+    ) }}
 
 select 
     locationid, 

@@ -1,4 +1,9 @@
-{{ config(materialized='table') }}
+{{ config(
+    schema='gold',
+    order_by='revenue_month',
+    engine='AggregatingMergeTree()',
+    materialized='table'
+    ) }}
 
 WITH trips_data as (
     SELECT * FROM {{ ref('fact_trips') }}
@@ -6,7 +11,7 @@ WITH trips_data as (
     SELECT 
     -- Revenue grouping
     pickup_zones AS revenue_zones,
-    toStartOfMonth("pickup_datetime") AS revenue_month,
+    {{ dbt.date_trunc("month", "pickup_datetime") }} AS revenue_month,
 
     service_type,
 
