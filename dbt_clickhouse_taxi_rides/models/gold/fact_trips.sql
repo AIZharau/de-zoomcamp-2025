@@ -11,12 +11,12 @@
 WITH geen_tripdata AS (
     SELECT *,
         'Green' AS service_type
-    FROM {{ ref('stg_green_tripdata') }}
+    FROM {{ ref('green_tripdata') }}
 ),
 yellow_tripdata AS (
     SELECT *,
         'Yellow' AS service_type
-    FROM {{ ref('stg_yellow_tripdata') }}
+    FROM {{ ref('yellow_tripdata') }}
 ),
 trips_unioned AS (
     SELECT * FROM green_tripdata
