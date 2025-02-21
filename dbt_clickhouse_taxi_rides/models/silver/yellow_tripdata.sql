@@ -48,6 +48,6 @@ SELECT
     custom_date
 FROM tripdata
 WHERE rn = 1
-{% if is_incremental()) %}
+{% if is_incremental() %}
    and custom_date >= (select coalesce(max(custom_date), '1900-01-01') from {{ this }} )
 {% endif %}
