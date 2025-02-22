@@ -1,5 +1,5 @@
 {{ config(
-    schema='gold',
+    schema='core',
     order_by='revenue_month',
     engine='AggregatingMergeTree()',
     materialized='table'

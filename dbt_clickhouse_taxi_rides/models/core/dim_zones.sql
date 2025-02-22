@@ -1,6 +1,6 @@
 {{ config(
     materialized='table',
-    schema='silver',
+    schema='staging',
     engine='MergeTree',
     ) }}
 

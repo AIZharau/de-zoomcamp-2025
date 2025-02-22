@@ -43,4 +43,5 @@ logs/
 
 # dbt
 target/
+!dbt_clickhouse_taxi_rides/target/manifest.json
 dbt_packages/

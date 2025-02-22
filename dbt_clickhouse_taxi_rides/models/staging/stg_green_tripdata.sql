@@ -1,6 +1,6 @@
 {{
   config(
-    schema='silver',
+    schema='staging',
     order_by='tripid',
     engine='ReplacingMergeTree',
     materialized='table'
@@ -12,7 +12,7 @@ WITH tripdata AS
 (
   SELECT *,
     row_number() OVER (PARTITION BY vendorid, lpep_pickup_datetime) AS rn
-  FROM {{ source('bronze', 'green_taxi') }}
+  FROM {{ source('staging', 'green_taxi') }}
   WHERE vendor_id IS NOT NULL
 )
 SELECT
