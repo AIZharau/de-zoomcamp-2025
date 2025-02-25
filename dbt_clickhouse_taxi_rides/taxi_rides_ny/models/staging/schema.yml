@@ -1,7 +1,7 @@
 version: 2
 
 models:
-    - name: green_tripdata
+    - name: stg_green_tripdata
       description: >
         Trip made by green taxis, also known as boro taxis and street-hail liveries.
         Green taxis may respond to street hails,but only in the areas indicated in green on the
@@ -84,7 +84,7 @@ models:
           - name: total_amount 
             description: The total amount charged to passengers. Does not include cash tips.
 
-    - name: yellow_tripdata
+    - name: stg_yellow_tripdata
       description: > 
         Trips made by New York City's iconic yellow taxis. 
         Yellow taxis are the only vehicles permitted to respond to a street hail from a passenger in all five

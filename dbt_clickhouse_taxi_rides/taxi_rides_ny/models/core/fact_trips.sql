@@ -2,32 +2,26 @@
     config(
         schema='core',
         order_by='tripid',
-        engine='MergeTree',
-        materialized='table'
+        engine='ReplacingMergeTree',
+        materialized='incremental'
     )
 }}
 
 
-WITH geen_tripdata AS (
+WITH trips_unioned AS (
     SELECT *,
         'Green' AS service_type
     FROM {{ ref('stg_green_tripdata') }}
-),
-yellow_tripdata AS (
+
+    UNION ALL
+
     SELECT *,
         'Yellow' AS service_type
     FROM {{ ref('stg_yellow_tripdata') }}
 ),
-trips_unioned AS (
-    SELECT * FROM green_tripdata
-    
-    union all
-
-    SELECT * FROM yellow_tripdata
-),
 dim_zones AS (
     SELECT * FROM {{ ref('dim_zones') }}
-    WHERE brough != 'Unknown'
+    WHERE borough != 'Unknown'
 )
 SELECT 
     trips_unioned.tripid, 

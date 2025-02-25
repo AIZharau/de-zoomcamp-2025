@@ -2,12 +2,12 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'dbt_clickhouse_taxi_rides'
+name: 'taxi_rides_ny'
 version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'ny_taxi'
+profile: 'taxi_rides_ny'
 
 
 # These configurations specify where dbt should look for different types of files.
@@ -33,18 +33,20 @@ clean-targets:         # directories to be removed by `dbt clean`
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
-  dbt_clickhouse_taxi_rides:
+  taxi_rides_ny:
       # Config indicated by + and applies to all files under models/example/
-      staing:
+      staging:
         +materialized: view
       core:
-        +materialized: view
+        +schema: core
+        +materialized: table
 
 vars:
   payment_type_values: [1, 2, 3, 4, 5, 6]
 
 seeds: 
-    dbt_clickhouse_taxi_rides:
-        taxi_zone_lookup:
-          +column_types:
-            locationid: Int32
+  taxi_rides_ny:
+      taxi_zone_lookup:
+        +schema: staging      
+        +column_types:
+          locationid: Int32

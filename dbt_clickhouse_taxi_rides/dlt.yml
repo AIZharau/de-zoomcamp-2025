@@ -1,0 +1,4 @@
+destinations:
+  iceberg_destination:
+    type: iceberg
+    bucket_url: "s3://zoomcamp"

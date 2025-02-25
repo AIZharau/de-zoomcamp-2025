@@ -11,21 +11,21 @@
 WITH tripdata AS 
 (
   SELECT *,
-    row_number() OVER (PARTITION BY vendorid, tpep_pickup_datetime) AS rn
+    row_number() OVER (PARTITION BY vendor_id, tpep_pickup_datetime) AS rn
   FROM {{ source('staging', 'yellow_taxi') }}
   WHERE vendor_id IS NOT NULL
 )
 SELECT
     -- identifiers
-    {{ dbt_utils.generate_surrogate_key(['vendorid', 'lpep_pickup_datetime']) }} AS tripid,
+    {{ dbt_utils.generate_surrogate_key(['vendor_id', 'tpep_pickup_datetime']) }} AS tripid,
     CAST(vendor_id AS Nullable(Int32)) AS vendorid,
     CAST(ratecode_id AS Nullable(Int32)) AS ratecodeid,
     CAST(pu_location_id AS Nullable(Int32)) AS pickup_locationid,
     CAST(do_location_id AS Nullable(Int32)) AS dropoff_locationid,
     
     -- timestamps
-    parseDateTimeBestEffort(lpep_pickup_datetime) AS pickup_datetime,
-    parseDateTimeBestEffort(lpep_dropoff_datetime) AS dropoff_datetime,
+    parseDateTimeBestEffort(tpep_pickup_datetime) AS pickup_datetime,
+    parseDateTimeBestEffort(tpep_dropoff_datetime) AS dropoff_datetime,
     
     -- travel info
     store_and_fwd_flag,
@@ -44,7 +44,7 @@ SELECT
     CAST(improvement_surcharge AS Float64) AS improvement_surcharge,
     CAST(total_amount AS Float64) AS total_amount,
     coalesce({{ dbt.safe_cast("payment_type", api.Column.translate_type("integer")) }}, 0) AS payment_type,
-    {{ get_payment_type_description("payment_type") }} AS payment_type_description
+    {{ get_payment_type_description("payment_type") }} AS payment_type_description,
     custom_date
 FROM tripdata
 WHERE rn = 1

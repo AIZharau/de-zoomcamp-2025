@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: staging
+    database: staging
+    schema: staging
+    tables:
+      - name: green_taxi
+      - name: yellow_taxi

@@ -1,4 +1,4 @@
-ny_taxi:
+ch-dbt-zoomcamp:
   outputs:
     dev:
       type: clickhouse

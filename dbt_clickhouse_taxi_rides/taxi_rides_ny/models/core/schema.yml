@@ -1,9 +1,18 @@
 version: 2
+      
+sources:
+  - name: staging
+    database: staging   
+    schema: staging    
+    tables:
+      - name: stg_green_tripdata
+      - name: stg_yellow_tripdata
+      - name: dim_zones
 
 models:
   - name: dim_zones
     description: >
-      List of unique zones idefied by locationid. 
+      List of unique zones identified by locationid. 
       Includes the service zone they correspond to (Green or yellow).
 
   - name: dm_monthly_zone_revenue
@@ -25,105 +34,105 @@ models:
       Each record corresponds to a trip uniquely identified by tripid. 
     columns:
       - name: tripid
-        data_type: string
+        data_type: String
         description: "unique identifier conformed by the combination of vendorid and pickup time"
 
       - name: vendorid
-        data_type: int64
+        data_type: UInt32
         description: ""
 
       - name: service_type
-        data_type: string
+        data_type: String
         description: ""
 
       - name: ratecodeid
-        data_type: int64
+        data_type: UInt32
         description: ""
 
       - name: pickup_locationid
-        data_type: int64
+        data_type: UInt32
         description: ""
 
       - name: pickup_borough
-        data_type: string
+        data_type: String
         description: ""
 
       - name: pickup_zone
-        data_type: string
+        data_type: String
         description: ""
 
       - name: dropoff_locationid
-        data_type: int64
+        data_type: UInt32
         description: ""
 
       - name: dropoff_borough
-        data_type: string
+        data_type: String
         description: ""
 
       - name: dropoff_zone
-        data_type: string
+        data_type: String
         description: ""
 
       - name: pickup_datetime
-        data_type: timestamp
+        data_type: DateTime
         description: ""
 
       - name: dropoff_datetime
-        data_type: timestamp
+        data_type: DateTime
         description: ""
 
       - name: store_and_fwd_flag
-        data_type: string
+        data_type: String
         description: ""
 
       - name: passenger_count
-        data_type: int64
+        data_type: UInt32
         description: ""
 
       - name: trip_distance
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: trip_type
-        data_type: int64
+        data_type: UInt32
         description: ""
 
       - name: fare_amount
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: extra
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: mta_tax
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: tip_amount
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: tolls_amount
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: ehail_fee
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: improvement_surcharge
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: total_amount
-        data_type: numeric
+        data_type: Float64
         description: ""
 
       - name: payment_type
-        data_type: int64
+        data_type: UInt32
         description: ""
 
       - name: payment_type_description
-        data_type: string
+        data_type: String
         description: ""
