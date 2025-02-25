@@ -61,3 +61,20 @@ CREATE TABLE IF NOT EXISTS staging.green_taxi (
           'Parquet'
           );
 
+/* row_data_fhv_taxi */
+CREATE TABLE IF NOT EXISTS staging.fhv_taxi (
+          dispatching_base_num String,
+          pickup_datetime String,
+          dropoff_datetime String,
+          pu_location_id String,
+          do_location_id String,
+          sr_flag String,
+          affiliated_base_number String,
+          custom_date Date DEFAULT toDate(now())
+          )
+          ENGINE = Iceberg(
+          'http://object-store:9000/zoomcamp/ny_taxi/taxi_data_fhv',
+          'fZebovkgLkHcDRHQs1jD',
+          '2QDlEkL2KAbpmBDMY9Xe6JImghwFmuxq5sv0leBe',
+          'Parquet'
+          );

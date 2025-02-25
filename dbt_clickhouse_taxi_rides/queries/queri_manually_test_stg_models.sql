@@ -1,6 +1,5 @@
 /* Manua test models */
 -- GREEN: stg_green_tripdata.sql -model
-DROP TABLE staging.stg_green_tripdata
 CREATE TABLE IF NOT EXISTS staging.stg_green_tripdata
 (
     tripid String,
@@ -182,3 +181,43 @@ SELECT
     custom_date
 FROM tripdata
 WHERE rn = 1;
+
+-- FHV:  stg_fhv_trips.sql -model
+CREATE TABLE IF NOT EXISTS staging.stg_fhv_tripdata
+(
+    dispatching_base_num String,
+    pickup_datetime DateTime,
+    dropoff_datetime DateTime,
+    pu_location_id Int32,
+    do_location_id Int32,
+    sr_flag String,
+    affiliated_base_number String,
+    custom_date Date
+)
+ENGINE = ReplacingMergeTree()
+ORDER BY tripid;
+
+INSERT INTO taging.stg_fhv_tripdata
+WITH tripdata AS 
+(
+    SELECT 
+        *
+    FROM staging.fhv_taxi
+    WHERE dispatching_base_num IS NOT NULL
+)
+SELECT
+    -- identifiers
+    lower(hex(MD5(toString(coalesce(cast(dispatching_base_num as String), '_dbt_utils_surrogate_key_null_') || '-' || coalesce(cast(pickup_datetime as String), '_dbt_utils_surrogate_key_null_'))))) AS tripid,
+    CAST(dispatching_base_num AS String) AS dispatching_base_num,
+    CAST(pu_location_id AS Int32) AS pickup_locationid,
+    CAST(do_location_id AS Int32) AS dropoff_locationid,
+    
+    -- timestamps
+    parseDateTimeBestEffort(pickup_datetime) AS pickup_datetime,
+    parseDateTimeBestEffort(dropoff_datetime) AS dropoff_datetime,
+    
+    -- travel info
+    sr_flag,
+    CAST(affiliated_base_number AS String) AS affiliated_base_number,
+    custom_date
+FROM tripdata;

@@ -8,16 +8,22 @@
 }}
 
 
-WITH trips_unioned AS (
+WITH green_tripdata AS (
     SELECT *,
         'Green' AS service_type
     FROM {{ ref('stg_green_tripdata') }}
-
-    UNION ALL
-
+),
+yellow_tripdata AS (
     SELECT *,
         'Yellow' AS service_type
     FROM {{ ref('stg_yellow_tripdata') }}
+),
+trips_unioned AS (
+    SELECT * FROM green_tripdata
+
+    UNION ALL
+
+    SELECT * FROM yellow_tripdata
 ),
 dim_zones AS (
     SELECT * FROM {{ ref('dim_zones') }}
