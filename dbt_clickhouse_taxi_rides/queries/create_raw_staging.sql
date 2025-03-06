@@ -77,4 +77,6 @@ CREATE TABLE IF NOT EXISTS staging.fhv_taxi (
           'fZebovkgLkHcDRHQs1jD',
           '2QDlEkL2KAbpmBDMY9Xe6JImghwFmuxq5sv0leBe',
           'Parquet'
-          );
+          )
+          SETTINGS
+          allow_dynamic_metadata_for_data_lakes = TRUE;

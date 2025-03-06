@@ -13,10 +13,12 @@ import datetime
 
 BUCKET_NAME = "zoomcamp"
 
+
 def get_taxi_data_url(taxi_type, year, month):
     """Generates URL for downloading data."""
     base_url = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download"
     return f"{base_url}/{taxi_type}/{taxi_type}_tripdata_{year}-{month:02d}.csv.gz"
+
 
 @dlt.source(name="ny_taxi")
 def ny_taxi_source(
@@ -24,10 +26,7 @@ def ny_taxi_source(
     year: str,
     month: str,
 ):
-    @dlt.resource(
-        name=f"taxi_data_{taxi_type}",
-        file_format="csv"
-    )
+    @dlt.resource(name=f"taxi_data_{taxi_type}", file_format="csv")
     def taxi_data_chunker():
         """Downloads data, processes it and loads it into an Iceberg table."""
         url = get_taxi_data_url(taxi_type, year, month)
@@ -38,7 +37,6 @@ def ny_taxi_source(
 
         # Unpacking .gz file in memory
         with gzip.GzipFile(fileobj=io.BytesIO(response.content)) as gz_file:
-            
             # df = pd.read_csv(gz_file)
             dtype = {
                 "VendorID": "float64",
@@ -67,9 +65,11 @@ def ny_taxi_source(
 
     return taxi_data_chunker
 
+
 if __name__ == "__main__":
     # Loading environment inclusion from .env file
     from dotenv import load_dotenv
+
     load_dotenv()
 
     # Creating a Configuration for MinIO
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         "endpoint_url": os.getenv("ENDPOINT_URL"),
         "bucket_url": os.getenv("BUCKET_URL"),
         "region": os.getenv("REGION"),
-        "use_ssl": False, 
+        "use_ssl": False,
     }
 
     # Creating a pipeline with MinIO configuration
@@ -96,5 +96,10 @@ if __name__ == "__main__":
 
     # Loading data
     data = ny_taxi_source(taxi_type="yellow", year=2019, month=1)
-    load_info = pipeline.run(data, table_name="yellow_taxi_data", loader_file_format="csv", **filesystem_config)
+    load_info = pipeline.run(
+        data,
+        table_name="yellow_taxi_data",
+        loader_file_format="csv",
+        **filesystem_config,
+    )
     print(load_info)

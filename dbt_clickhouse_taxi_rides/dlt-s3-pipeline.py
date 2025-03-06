@@ -3,14 +3,13 @@ import datetime
 import os
 import gzip
 import pandas as pd
-import pyarrow.parquet as pq
 from dlt.sources.helpers import requests
 from dlt.common.libs.pyarrow import pyarrow as pa
-from dlt.sources.filesystem import FileItemDict, filesystem, readers, read_csv
 
 
 BATCH_SIZE = 100_000
 GROUP_NAME = DESTINATION_SCHEMA_NAME = "ny_taxi"
+
 
 def get_taxi_data_url(taxi_type, year, month):
     """Generates URL for downloading data."""
@@ -40,18 +39,16 @@ def ny_taxi_source(
 
             # Unpack the .gz file and read the CSV in parts
             with gzip.GzipFile(fileobj=response.raw) as gz_file:
-
                 # Read CSV in parts using pandas
                 for chunk in pd.read_csv(gz_file, chunksize=BATCH_SIZE):
-
                     chunk = chunk.astype("string")
                     # Transform the chunk into PyArrow Table and add custom_date column
                     table = pa.Table.from_pandas(chunk)
-                   
+
                     date_column = pa.array(
                         [datetime.date(year, month, 1)] * len(table), type=pa.date32()
                     )
-                    
+
                     table = table.append_column(
                         "custom_date", pa.chunked_array([date_column])
                     )
@@ -62,26 +59,28 @@ def ny_taxi_source(
 
     return resource
 
+
 if __name__ == "__main__":
     from dotenv import load_dotenv
+
     load_dotenv()
 
     # Creating a Configuration for S3 bucket
-    BUCKET_NAME = 'zoomcamp'
+    BUCKET_NAME = "zoomcamp"
     s3_config = {
-            "aws_access_key_id": os.getenv("AWS_ACCESS_KEY_ID"),
-            "aws_secret_access_key": os.getenv("AWS_SECRET_ACCESS_KEY"),
-            "endpoint_url": os.getenv("ENDPOINT_URL"),
-            "bucket_url": os.getenv("BUCKET_URL"),
-            "region": os.getenv("REGION"),
-            "use_ssl": False, 
-        }
+        "aws_access_key_id": os.getenv("AWS_ACCESS_KEY_ID"),
+        "aws_secret_access_key": os.getenv("AWS_SECRET_ACCESS_KEY"),
+        "endpoint_url": os.getenv("ENDPOINT_URL"),
+        "bucket_url": os.getenv("BUCKET_URL"),
+        "region": os.getenv("REGION"),
+        "use_ssl": False,
+    }
 
     # Create a pipeline and configure it to write to S3
     pipeline = dlt.pipeline(
         pipeline_name="ny_taxi_pipeline",
         destination="filesystem",
-        dataset_name="ny_taxi"
+        dataset_name="ny_taxi",
     )
 
     # Setting filesystem s3
@@ -96,16 +95,15 @@ if __name__ == "__main__":
     for taxi_type in taxi_types:
         for year in years:
             for month in range(1, 13):
-
                 s3_path = f"{taxi_type}/{year}/{month}/"
                 resource = ny_taxi_source(taxi_type=taxi_type, year=year, month=month)
                 resource.staging_path = s3_path
-                
+
                 pipeline.run(
                     resource,
-                    loader_file_format='parquet', 
-                    table_format='iceberg',
-                    **filesystem_config
+                    loader_file_format="parquet",
+                    table_format="iceberg",
+                    **filesystem_config,
                 )
 
                 print(f"Finished processing {taxi_type} data for {year}-{month}.")
